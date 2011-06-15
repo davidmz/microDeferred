@@ -1,7 +1,7 @@
 /**
  * @preserve Copyright (c) 2011 David Mzareulyan
  *
- * μDeferred library
+ * μDeferred library 
  * 
  */
 (function(self) {
