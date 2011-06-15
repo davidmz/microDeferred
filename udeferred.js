@@ -1,13 +1,13 @@
 /**
  * @preserve Copyright (c) 2011 David Mzareulyan
  *
- * microDeferred
+ * μDeferred
  * 
  */
 (function(self) {
 
-    if (typeof self.jQuery !== "undefined" && typeof self.jQuery.Deferred !== "undefined") {
-        self.Deferred = self.jQuery.Deferred;
+    if (typeof self['jQuery'] !== "undefined" && typeof self['jQuery'].Deferred !== "undefined") {
+        self.Deferred = self['jQuery'].Deferred;
         return;
     }
 
@@ -20,12 +20,12 @@
                 promiseMethods,
                 deferred = this;
 
-        var setStatus = function(newStatus, newArgs) {
+        var setStatus = function(newStatus, newArgs, context) {
             if (status) return;
             status = newStatus;
             args = newArgs;
             var list = callbacks[status];
-            while (list.length) list.shift().apply(promise, args);
+            while (list.length) list.shift().apply(context, args);
             callbacks = null;
             return deferred;
         };
@@ -47,8 +47,16 @@
                     promise[k] = promiseMethods[k];
             return promise;
         };
-        deferred.resolve = function() { return setStatus(1, arguments); };
-        deferred.reject  = function() { return setStatus(2, arguments); };
+        deferred.resolve = function() { return setStatus(1, arguments, promise); };
+        deferred.reject  = function() { return setStatus(2, arguments, promise); };
+        deferred.resolveWith = function() {
+            var ctx = arguments.shift();
+            return setStatus(1, arguments, ctx);
+        };
+        deferred.rejectWith = function() {
+            var ctx = arguments.shift();
+            return setStatus(2, arguments, ctx);
+        };
 
         // Promise object methods
         promiseMethods = {
