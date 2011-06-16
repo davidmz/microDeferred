@@ -6,7 +6,7 @@
  */
 (function() {
 
-    var global = (function(){return this;}).call(null);
+    var global = (function(){ return this; })();
 
     if (typeof global['jQuery'] !== "undefined" && typeof global['jQuery'].Deferred !== "undefined") {
         global.Deferred = global['jQuery'].Deferred;
