@@ -1,7 +1,7 @@
 /**
  * @preserve Copyright (c) 2011 David Mzareulyan
  *
- * μDeferred library 
+ * μDeferred library
  * 
  */
 (function(self) {
@@ -13,26 +13,28 @@
 
     /** @constructor */
     self.Deferred = function() {
+        if (this instanceof arguments.callee) return new self.Deferred();
+
         var     callbacks = [0, [], []],
-                status = 0,
+                isFired = 0, // 1 - resolved, 2 - rejected
                 args,
                 promise = null,
                 promiseMethods,
                 deferred = this;
 
-        var setStatus = function(newStatus, newArgs, context) {
-            if (status) return;
-            status = newStatus;
+        var setStatus = function(type, newArgs, context) {
+            if (isFired) return;
+            isFired = type;
             args = newArgs;
-            var list = callbacks[status];
+            var list = callbacks[type];
             while (list.length) list.shift().apply(context, args);
             callbacks = null;
             return deferred;
         };
         var addCallback = function(onStatus, callback) {
-            if (status == onStatus) {
+            if (isFired == onStatus) {
                 callback.apply(this, args);
-            } else if (!status) {
+            } else if (!isFired) {
                 callbacks[onStatus].push(callback);
             }
             return this;
@@ -70,8 +72,8 @@
                 return this.then(callback, callback);
             },
 
-            isResolved: function() { return (status == 1); },
-            isRejected: function() { return (status == 2); }
+            isResolved: function() { return (isFired == 1); },
+            isRejected: function() { return (isFired == 2); }
         };
     };
 
