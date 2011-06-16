@@ -15,7 +15,7 @@
 
     /** @constructor */
     global.Deferred = function() {
-        if (this instanceof arguments.callee) return new global.Deferred();
+        if (!(this instanceof arguments.callee)) return new global.Deferred();
 
         var     callbacks = [0, [], []],
                 isFired = 0, // 1 - resolved, 2 - rejected
