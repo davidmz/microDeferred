@@ -4,16 +4,18 @@
  * μDeferred library
  * 
  */
-(function(self) {
+(function() {
 
-    if (typeof self['jQuery'] !== "undefined" && typeof self['jQuery'].Deferred !== "undefined") {
-        self.Deferred = self['jQuery'].Deferred;
+    var global = (function(){return this;}).call(null);
+
+    if (typeof global['jQuery'] !== "undefined" && typeof global['jQuery'].Deferred !== "undefined") {
+        global.Deferred = global['jQuery'].Deferred;
         return;
     }
 
     /** @constructor */
-    self.Deferred = function() {
-        if (this instanceof arguments.callee) return new self.Deferred();
+    global.Deferred = function() {
+        if (this instanceof arguments.callee) return new global.Deferred();
 
         var     callbacks = [0, [], []],
                 isFired = 0, // 1 - resolved, 2 - rejected
@@ -77,4 +79,4 @@
         };
     };
 
-})(this);
+})();
